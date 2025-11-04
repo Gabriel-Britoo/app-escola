@@ -85,13 +85,13 @@ useEffect(() => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
           <View style={styles.cardTurma}>
-            <Text style={styles.nomeTurma}>{index + 1} {item.nome}</Text>
+            <Text style={styles.nomeTurma}>{index + 1} {item.nome_turma}</Text>
             <View style={styles.botoes}>
               <TouchableOpacity style={styles.btnExcluir} onPress={() => excluirTurma(item)}>
                 <Text style={styles.txtBotao}>Excluir</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnVisualizar}>
-                <Text style={styles.txtBotao}>Visualizar</Text>
+                <Text style={styles.txtBotao}>Editar</Text>
               </TouchableOpacity>
             </View>
           </View>
