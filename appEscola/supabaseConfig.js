@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = "https://qdgmdforfavbwupnzeub.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkZ21kZm9yZmF2Ynd1cG56ZXViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMzU4MjMsImV4cCI6MjA3NzgxMTgyM30.oGHmudNL7Hbfy8baq4V8UiN1x1UuRmPWESTj0j7KPiw";
+const SUPABASE_URL = "https://ukrbivktdbxzucopondq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVrcmJpdmt0ZGJ4enVjb3BvbmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNzcxMzcsImV4cCI6MjA3Nzg1MzEzN30.JR9ttXaoLcmBBwpLJTNAmX_Xc6xqnh7nBggEDZbSJ-Q";
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     throw new Error(
