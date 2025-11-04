@@ -1,9 +1,23 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView } from "react-native-gesture-handler";
+import { supabase } from '../../supabaseConfig';
 
-export default function TelaAtivs() {
+export default function TelaAtivs({ navigation }) {
+    const [atividades, setAtividades] = useState([]);
+
+    useEffect(() => {
+        async function carregarAtividades() {
+            const { data, error } = await supabase
+                .from("atividades")
+                .select("*")
+                .eq("professor_id", 1);
+            if (!error && data) setAtividades(data);
+        }
+        carregarAtividades();
+    }, []);
+
   return (
     <View style={styles.container}>
         <View style={styles.header}>
