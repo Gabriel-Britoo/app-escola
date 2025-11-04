@@ -12,47 +12,50 @@ export default function TelaAtivs({ navigation }) {
             const { data, error } = await supabase
                 .from("atividades")
                 .select("*")
-                .eq("professor_id", 1);
+                .eq("turma_id", 1);
             if (!error && data) setAtividades(data);
         }
         carregarAtividades();
     }, []);
 
-  return (
-    <View style={styles.container}>
-        <View style={styles.header}>
-            <Text style={styles.profHeader}>Isadora Gomes</Text>
-            <TouchableOpacity style={styles.logout}>
-                <Text style={{fontSize: 16, color: '#A31D1D', marginRight: 8, fontWeight: '700'}}>Sair</Text>
-                <Ionicons name="log-out" size={25} color="#A31D1D" />
-            </TouchableOpacity>
-        </View>
-        <View style={styles.main}>
-            <ScrollView style={styles.listaAtivs}>
-                <View style={styles.ativItem}>
-                    <Text style={{fontSize: 40, fontWeight: 700, color: '#D84040', marginHorizontal: 5}}>1</Text>
-                    <View style={{marginLeft: 10, justifyContent: 'center'}}>
-                        <Text style={{fontSize: 18, fontWeight: 600}}>Titulo</Text>
-                        <Text style={{overflow: 'hidden'}}>Descrição da atividade</Text>
-                    </View>
-                </View>
-
-                <View style={styles.ativItem}>
-                    <Text style={{fontSize: 40, fontWeight: 700, color: '#D84040', marginHorizontal: 5}}>2</Text>
-                    <View style={{marginLeft: 10, justifyContent: 'center'}}>
-                        <Text style={{fontSize: 18, fontWeight: 600}}>Titulo</Text>
-                        <Text>Descrição da atividade só que bem grande e enorme que nem o Lin</Text>
-                    </View>
-                </View>
-            </ScrollView>
-            <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10}}>
-                <TouchableOpacity style={styles.novaAtiv}>
-                    <Text style={{color: '#fff', fontWeight: '700'}}>Nova Atividade</Text>
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.profHeader}>Isadora Gomes</Text>
+                <TouchableOpacity style={styles.logout}>
+                    <Text style={{ fontSize: 16, color: '#A31D1D', marginRight: 8, fontWeight: '700' }}>Sair</Text>
+                    <Ionicons name="log-out" size={25} color="#A31D1D" />
                 </TouchableOpacity>
             </View>
+            <View style={styles.main}>
+                <ScrollView style={styles.listaAtivs}>
+                    {atividades.length > 0 ? (
+                        atividades.map((ativ, index) => (
+                            <View key={ativ.id || index} style={styles.ativItem}>
+                                <Text style={{ fontSize: 40, fontWeight: '700', color: '#D84040', marginHorizontal: 5 }}>
+                                    {index + 1}
+                                </Text>
+                                <View style={{ marginLeft: 10, justifyContent: 'center' }}>
+                                    <Text style={{ fontSize: 18, fontWeight: '600' }}>{ativ.titulo_atividade}</Text>
+                                    <Text numberOfLines={2} style={{ overflow: 'hidden' }}>
+                                        {ativ.descricao}
+                                    </Text>
+                                </View>
+                            </View>
+                        ))
+                    ) : (
+                        <Text style={{ textAlign: 'center', color: '#A31D1D' }}>Nenhuma atividade encontrada.</Text>
+                    )}
+                </ScrollView>
+
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                    <TouchableOpacity style={styles.novaAtiv}>
+                        <Text style={{ color: '#fff', fontWeight: '700' }}>Nova Atividade</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
-    </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
