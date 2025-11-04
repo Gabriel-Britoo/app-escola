@@ -25,7 +25,7 @@
             Alert.alert('Login bem-sucedido!', 'Bem-vindo de volta, ' + data.user.email);
             console.log('Usuário logado:', data.user);
 
-             navigation.navigate("Professor");
+             navigation.navigate('Tabs');
         };
 
         const redirecionarCadastro = () => {
