@@ -2,8 +2,9 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-gesture-handler';
+import Login from './src/screens/Login'
 import TelaProf from './src/screens/TelaProf';
-import CadProf from './src/screens/CadProf';
+import CadastroProf from './src/screens/CadastroProf';
 import TelaAtivs from './src/screens/TelaAtivs';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -14,6 +15,7 @@ function TabsNavigator() {
   return (
     <NavigationContainer>
       <Tab.Navigator
+      initialRouteName="Login"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
@@ -42,8 +44,9 @@ function TabsNavigator() {
           },
       })}
       >
+        <Tab.Screen name="Login" component={Login} options={{ headerShown: false, tabBarItemStyle: { display: 'none' } }} />
         <Tab.Screen name="Professor" component={TelaProf} options={{ headerShown: false }} />
-        <Tab.Screen name="Novo professor" component={CadProf} options={{ headerShown: false }} />
+        <Tab.Screen name="Novo professor" component={CadastroProf} options={{ headerShown: false }} />
         <Tab.Screen name="Atividades" component={TelaAtivs} options={{ headerShown: false }} />
       </Tab.Navigator>
     </NavigationContainer>

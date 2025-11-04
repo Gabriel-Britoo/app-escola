@@ -25,11 +25,11 @@
             Alert.alert('Login bem-sucedido!', 'Bem-vindo de volta, ' + data.user.email);
             console.log('Usuário logado:', data.user);
 
-             navigation.navigate("Prof");
+             navigation.navigate("Professor");
         };
 
         const redirecionarCadastro = () => {
-            navigation.navigate("Cadastro")
+            navigation.navigate("Novo professor")
         }
         return (
             <View style={styles.container}>
@@ -62,7 +62,7 @@
                 <View style={styles.textCadastro}>
                     <TouchableOpacity onPress={redirecionarCadastro}>
                         <Text style={styles.linkCadastro}>
-                            Não tem uma conta? <Text style={styles.linkDestacado}>Cadastre-se</Text>
+                             <Text style={styles.linkDestacado}>Cadastrar novo professor</Text>
                         </Text>
                     </TouchableOpacity>
                 </View>

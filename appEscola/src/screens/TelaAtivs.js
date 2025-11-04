@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 10,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#F8F2DE',
         paddingLeft: 8,
         paddingRight: 8,
         paddingTop: 4,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        backgroundColor: '#e9e9e9ff',
+        backgroundColor: '#F8F2DE',
     },
     novaAtiv: {
         height: 40,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     },
     ativItem: {
         flexDirection: 'row',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fbf8eeff',
         padding: 10,
         borderWidth: 1,
         borderColor: '#D84040',

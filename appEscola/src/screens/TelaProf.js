@@ -8,18 +8,17 @@ export default function TelaProf({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [novaTurma, setNovaTurma] = useState("");
 
+useEffect(() => {
+  async function carregarTurmas() {
+    const { data, error } = await supabase
+      .from("turmas")
+      .select("*")
+      .eq("professor_id", 1); 
+    if (!error && data) setTurmas(data);
+  }
+  carregarTurmas();
+}, []);
 
-  useEffect(() => {
-    async function carregarTurmas() {
-      const { data, error } = await supabase
-        .from("turmas")
-        .select("*")
-        .eq("professor", professor);
-
-      if (!error && data) setTurmas(data);
-    }
-    carregarTurmas();
-  }, []);
 
 
   const cadastrarTurma = async () => {
