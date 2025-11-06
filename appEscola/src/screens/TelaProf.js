@@ -1,96 +1,129 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, FlatList, Alert, Modal, TextInput, StyleSheet } from "react-native";
-import { supabase } from '../../supabaseConfig';
+import { View, Text, TouchableOpacity, FlatList, Modal, TextInput, StyleSheet, } from "react-native";
+import { supabase } from "../../supabaseConfig";
 
-export default function TelaProf({ navigation }) {
-  const [professor, setProfessor] = useState("");
+export default function TelaProf() {
   const [turmas, setTurmas] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalNovaTurma, setModalNovaTurma] = useState(false);
+  const [modalEditar, setModalEditar] = useState(false);
+  const [modalExcluir, setModalExcluir] = useState(false);
+
   const [novaTurma, setNovaTurma] = useState("");
+  const [turmaSelecionada, setTurmaSelecionada] = useState(null);
+  const [novoNomeTurma, setNovoNomeTurma] = useState("");
 
-useEffect(() => {
-  async function carregarTurmas() {
-    const { data, error } = await supabase
-      .from("turmas")
-      .select("*")
-      .eq("professor_id", 1); 
-    if (!error && data) setTurmas(data);
-  }
-  carregarTurmas();
-}, []);
+  useEffect(() => {
+    async function carregarTurmas() {
+      const { data, error } = await supabase
+        .from("turmas")
+        .select("*")
+        .eq("professor_id", 1);
 
-
+      if (!error && data) setTurmas(data);
+    }
+    carregarTurmas();
+  }, []);
 
   const cadastrarTurma = async () => {
-  if (novaTurma.trim() === "") {
-    Alert.alert("Erro", "Informe um nome para a turma!");
-    return;
-  }
-
-  const { error } = await supabase
-    .from("turmas")
-    .insert([{ nome_turma: novaTurma, professor_id: 1 }]);
-
-  if (error) {
-    console.log("Erro ao cadastrar turma:", error.message);
-    Alert.alert("Erro", "Falha ao cadastrar turma");
-  } else {
-    setTurmas([...turmas, { nome_turma: novaTurma }]);
-    setNovaTurma("");
-    setModalVisible(false);
-  }
-};
-
-
-
-  const excluirTurma = async (turma) => {
-
-    const { data: atividades } = await supabase
-      .from("atividades")
-      .select("*")
-      .eq("turma", turma.nome);
-
-    if (atividades && atividades.length > 0) {
-      Alert.alert("Erro", "Você não pode excluir uma turma que possui atividades cadastradas");
+    if (novaTurma.trim() === "") {
+      alert("Informe um nome para a turma!");
       return;
     }
 
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Deseja realmente excluir a turma "${turma.nome}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            await supabase.from("turmas").delete().eq("id", turma.id);
-            setTurmas(turmas.filter((t) => t.id !== turma.id));
-          },
-        },
-      ]
-    );
+    const { data, error } = await supabase
+      .from("turmas")
+      .insert([{ nome_turma: novaTurma, professor_id: 1 }])
+      .select();
+
+    if (error) {
+      alert("Erro ao cadastrar turma!");
+    } else {
+      setTurmas([...turmas, data[0]]);
+      setNovaTurma("");
+      setModalNovaTurma(false);
+    }
+  };
+
+  const abrirEditar = (turma) => {
+    setTurmaSelecionada(turma);
+    setNovoNomeTurma(turma.nome_turma);
+    setModalEditar(true);
+  };
+
+  const editarTurma = async () => {
+    if (novoNomeTurma.trim() === "") {
+      alert("Informe um nome válido!");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("turmas")
+      .update({ nome_turma: novoNomeTurma })
+      .eq("id", turmaSelecionada.id);
+
+    if (error) {
+      alert("Erro ao editar turma!");
+    } else {
+      setTurmas(
+        turmas.map((t) =>
+          t.id === turmaSelecionada.id
+            ? { ...t, nome_turma: novoNomeTurma }
+            : t
+        )
+      );
+      setModalEditar(false);
+      setTurmaSelecionada(null);
+    }
+  };
+
+  const abrirExcluir = (turma) => {
+    setTurmaSelecionada(turma);
+    setModalExcluir(true);
+  };
+
+  const excluirTurma = async () => {
+    const { error } = await supabase
+      .from("turmas")
+      .delete()
+      .eq("id", turmaSelecionada.id);
+
+    if (error) {
+      alert("Erro ao excluir turma!");
+    } else {
+      setTurmas(turmas.filter((t) => t.id !== turmaSelecionada.id));
+      setModalExcluir(false);
+      setTurmaSelecionada(null);
+    }
   };
 
   return (
     <View style={styles.container}>
-
-
-      <TouchableOpacity style={styles.botaoCadastrar} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity
+        style={styles.botaoCadastrar}
+        onPress={() => setModalNovaTurma(true)}
+      >
         <Text style={styles.textoCadastrar}>Cadastrar turma</Text>
       </TouchableOpacity>
 
       <FlatList
         data={turmas}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id?.toString()}
         renderItem={({ item, index }) => (
           <View style={styles.cardTurma}>
-            <Text style={styles.nomeTurma}>{index + 1} {item.nome_turma}</Text>
+            <Text style={styles.nomeTurma}>
+              {index + 1}. {item.nome_turma}
+            </Text>
             <View style={styles.botoes}>
-              <TouchableOpacity style={styles.btnExcluir} onPress={() => excluirTurma(item)}>
+              <TouchableOpacity
+                style={styles.btnExcluir}
+                onPress={() => abrirExcluir(item)}
+              >
                 <Text style={styles.txtBotao}>Excluir</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnVisualizar}>
+              <TouchableOpacity
+                style={styles.btnEditar}
+                onPress={() => abrirEditar(item)}
+              >
                 <Text style={styles.txtBotao}>Editar</Text>
               </TouchableOpacity>
             </View>
@@ -98,11 +131,10 @@ useEffect(() => {
         )}
       />
 
-      <Modal transparent visible={modalVisible} animationType="fade">
+      <Modal transparent visible={modalNovaTurma} animationType="fade">
         <View style={styles.overlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.tituloModal}>Nova turma</Text>
-            <Text style={styles.subtituloModal}>Informe o nome da turma e confirme para cadastrar.</Text>
             <TextInput
               placeholder="Nome da turma"
               style={styles.input}
@@ -112,7 +144,52 @@ useEffect(() => {
             <TouchableOpacity style={styles.btnSalvar} onPress={cadastrarTurma}>
               <Text style={styles.txtSalvar}>Salvar</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <TouchableOpacity onPress={() => setModalNovaTurma(false)}>
+              <Text style={styles.cancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+
+      <Modal transparent visible={modalEditar} animationType="fade">
+        <View style={styles.overlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.tituloModal}>Editar turma</Text>
+            <TextInput
+              placeholder="Novo nome"
+              style={styles.input}
+              value={novoNomeTurma}
+              onChangeText={setNovoNomeTurma}
+            />
+            <TouchableOpacity style={styles.btnSalvar} onPress={editarTurma}>
+              <Text style={styles.txtSalvar}>Salvar alterações</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalEditar(false)}>
+              <Text style={styles.cancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal transparent visible={modalExcluir} animationType="fade">
+        <View style={styles.overlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.tituloModal}>Excluir turma</Text>
+            <Text style={styles.subtituloModal}>
+              Tem certeza que deseja excluir{" "}
+              <Text style={{ fontWeight: "bold" }}>
+                {turmaSelecionada?.nome_turma}
+              </Text>
+              ?
+            </Text>
+            <TouchableOpacity
+              style={[styles.btnSalvar, { backgroundColor: "#D84040" }]}
+              onPress={excluirTurma}
+            >
+              <Text style={styles.txtSalvar}>Excluir</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalExcluir(false)}>
               <Text style={styles.cancelar}>Cancelar</Text>
             </TouchableOpacity>
           </View>
@@ -161,7 +238,7 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 6,
   },
-  btnVisualizar: {
+  btnEditar: {
     backgroundColor: "#8ABF5A",
     padding: 6,
     borderRadius: 6,
@@ -191,7 +268,7 @@ const styles = StyleSheet.create({
   subtituloModal: {
     textAlign: "center",
     color: "#A31D1D",
-    marginVertical: 8,
+    marginVertical: 10,
   },
   input: {
     backgroundColor: "#fff",
@@ -207,6 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 25,
+    marginTop: 10,
   },
   txtSalvar: {
     color: "#F8F2DE",
