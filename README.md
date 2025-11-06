@@ -33,3 +33,7 @@ Depois de instalar, para executar:
 
 
 npx expo start
+
+<p align="center">
+  <img src='./appEscola/src/assets/img/login.png'>
+</p>
