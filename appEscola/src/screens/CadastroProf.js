@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { supabase } from '../../supabaseConfig';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -7,6 +7,28 @@ const CadastroProf = ({ navigation }) => {
   const [user_email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user_name, setName] = useState('');
+  const [professor, setProfessor] = useState(null);
+
+  async function carregarProfessor() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("user_email", user.email)
+      .single();
+
+    if (error) {
+      console.error("Erro ao carregar professor:", error);
+    } else {
+      setProfessor(data);
+    }
+  }
+
+  useEffect(() => {
+    carregarProfessor();
+  }, []);
 
  const registerUser = async (user_email, password, user_name) => {
   try {
@@ -19,12 +41,6 @@ const CadastroProf = ({ navigation }) => {
 
     if (signUpError) throw signUpError;
     const userId = signUpData.user?.id || signUpData.session?.user?.id;
-
-    if (!userId) {
-      console.log("Usuário precisa confirmar o e-mail antes do cadastro no banco.");
-      Alert.alert("Verifique seu e-mail", "Confirme seu cadastro antes de prosseguir.");
-      return;
-    }
 
     const { error: dbError } = await supabase
       .from('users')
@@ -59,15 +75,25 @@ const CadastroProf = ({ navigation }) => {
 
 
   };
-  const redirecionarLogin = () => {
-    navigation.navigate("Login")
-  }
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      alert('Erro ao fazer logout');
+    }
+  };
 
   return (
     <View style={styles.container}>
         <View style={styles.header}>
-                  <Text style={styles.profHeader}>Isadora Gomes</Text>
-                  <TouchableOpacity style={styles.logout}>
+                  <Text style={styles.profHeader}>{professor?.user_name || 'Carregando...'}</Text>
+                  <TouchableOpacity style={styles.logout} onPress={handleLogout}>
                       <Text style={{fontSize: 16, color: '#A31D1D', marginRight: 8, fontWeight: '700'}}>Sair</Text>
                       <Ionicons name="log-out" size={25} color="#A31D1D" />
                   </TouchableOpacity>
@@ -163,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 38,
-    width: 110,
+    width: '78%',
     borderRadius: 7,
 
     marginTop: 20,
@@ -171,7 +197,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 700,
     fontFamily: 'Gotham',
   },
