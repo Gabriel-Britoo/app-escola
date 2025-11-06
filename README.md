@@ -34,9 +34,11 @@ Depois de instalar, para executar:
 
 npx expo start
 
+### Print Screens
+
 <div style='display: flex; flex-direction: row;'>
-    <img src='./appEscola/src/assets/img/login.png' style='width: 200;'>
-    <img src='./appEscola/src/assets/img/cadProf.png' style='width: 200;'>
-    <img src='./appEscola/src/assets/img/telaAtiv.png' style='width: 200;'>
-    <img src='./appEscola/src/assets/img/telaProf.png' style='width: 200;'>
+    <img src='./appEscola/src/assets/img/login.png' style='width: 100;'>
+    <img src='./appEscola/src/assets/img/cadProf.png' style='width: 100;'>
+    <img src='./appEscola/src/assets/img/telaAtiv.png' style='width: 100;'>
+    <img src='./appEscola/src/assets/img/telaProf.png' style='width: 100;'>
 </div>
